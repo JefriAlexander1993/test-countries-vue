@@ -2,8 +2,11 @@
   <div>
     <b-row class="mt-3">
       <b-card>
+        <!-- <b-button
+          >Open Modal</b-button
+        > -->
         <b-row>
-          <b-col cols="12">
+          <b-col cols="8">
             <b-form-input
               id="input-1"
               v-model="search"
@@ -13,11 +16,33 @@
               class="mb-2"
             ></b-form-input>
           </b-col>
+          <b-col cols="4">
+            <b-form-select
+              v-model="selected"
+              :options="regions"
+            ></b-form-select>
+          </b-col>
           <b-col cols="3" v-for="(item, index) in items" v-bind:key="index">
+            <!-- <b-modal :id="'bv-modal-' + index" hide-footer>
+              <template #modal-title>
+                {{ item.name.common }}
+              </template>
+              <div class="d-block text-center">
+                <h3>Hello From This Modal!</h3>
+              </div>
+              <b-button
+                class="mt-3"
+                block
+                @click="$bvModal.hide('bv-modal-' + index)"
+                >Close Me</b-button
+              >
+                   @click="$bvModal.show('bv-modal-' + index)"
+            </b-modal> -->
             <b-card
               :id="item.idd.suffixes"
               tag="article"
               style="height: 18rem; width: 14rem; font-size: 13px"
+              @click="detailCountry(item.name.common)"
             >
               <b-card-img
                 :src="item.flags.svg"
@@ -53,10 +78,20 @@ export default {
       // Note 'isActive' is left out and will not appear in the rendered table
       search: "",
       countries: [],
+      selected: null,
+      regions: [
+        { value: null, text: "Please select an option" },
+        { value: "Americas", text: "Americas" },
+        { value: "Asia", text: "Asia" },
+        { value: "Europe", text: "Europe" },
+        { value: "Africa", text: "Africa" },
+        { value: "Oceania", text: "Oceania" },
+        { value: "Antarctic", text: "Antarctic" },
+      ],
     };
   },
   mounted() {
-    this.getCustomerData();
+    this.getCountriesData();
   },
   methods: {
     // showCreateModal() {
@@ -65,7 +100,7 @@ export default {
     // closeCreateModal() {
     //   this.$refs["create-customer-modal"].hide();
     // },
-    getCustomerData() {
+    getCountriesData() {
       axios
         .get("https://restcountries.com/v3.1/all")
         .then((response) => {
@@ -75,9 +110,22 @@ export default {
           console.log(error);
         });
     },
+
+    detailCountry(name) {
+      this.$route.params.name = name;
+      this.$router.replace({ name: "detail" });
+      // next("/detail");
+    },
   },
   computed: {
     items() {
+      if (this.selected != null) {
+        return this.countries.filter((item) => {
+          return item.region
+            .toLowerCase()
+            .includes(this.selected.toLowerCase());
+        });
+      }
       return this.countries.filter((item) => {
         return item.name.common
           .toLowerCase()

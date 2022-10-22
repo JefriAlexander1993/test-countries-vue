@@ -23,21 +23,6 @@
             ></b-form-select>
           </b-col>
           <b-col cols="3" v-for="(item, index) in items" v-bind:key="index">
-            <!-- <b-modal :id="'bv-modal-' + index" hide-footer>
-              <template #modal-title>
-                {{ item.name.common }}
-              </template>
-              <div class="d-block text-center">
-                <h3>Hello From This Modal!</h3>
-              </div>
-              <b-button
-                class="mt-3"
-                block
-                @click="$bvModal.hide('bv-modal-' + index)"
-                >Close Me</b-button
-              >
-                   @click="$bvModal.show('bv-modal-' + index)"
-            </b-modal> -->
             <b-card
               :id="item.idd.suffixes"
               tag="article"
@@ -114,23 +99,33 @@ export default {
     detailCountry(name) {
       this.$route.params.name = name;
       this.$router.replace({ name: "detail" });
-      // next("/detail");
     },
   },
   computed: {
     items() {
-      if (this.selected != null) {
+      if (this.selected != null && this.search == "") {
+        console.log(this.selected);
+        console.log(this.search == "");
         return this.countries.filter((item) => {
           return item.region
             .toLowerCase()
             .includes(this.selected.toLowerCase());
         });
+      } else {
+        console.log(this.search == "");
+        return this.countries.filter((item) => {
+          return (
+            item.name.common
+              .toLowerCase()
+              .includes(this.search.toLowerCase()) &&
+            item.region
+              .toLowerCase()
+              .includes(
+                this.selected != null ? this.selected.toLowerCase() : ""
+              )
+          );
+        });
       }
-      return this.countries.filter((item) => {
-        return item.name.common
-          .toLowerCase()
-          .includes(this.search.toLowerCase());
-      });
     },
   },
 };

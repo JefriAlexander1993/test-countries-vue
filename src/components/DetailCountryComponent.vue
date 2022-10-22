@@ -8,6 +8,7 @@
             :src="country.flags.svg"
             alt="Image"
             class="rounded-0"
+            style="height: 20rem; max-width: 30rem"
           ></b-card-img>
         </b-col>
         <b-col md="6">
@@ -15,9 +16,56 @@
             <b-card-text>
               <b-button variant="primary" @click="back()">Back</b-button>
               <br />
-              <b>Nombre oficial:</b> {{ country.name.official }}<br />
+              <b>Name official:</b> {{ country.name.official }}<br />
+              <b>Capital:</b> {{ country.capital[0] }}<br />
               <b>Region:</b> {{ country.region }}<br />
               <b>Sub region:</b> {{ country.subregion }}<br />
+              <b>Borders:</b><br />
+              <ul>
+                <li
+                  v-for="(border, index) in country.borders"
+                  v-bind:key="index"
+                >
+                  <b-link @click="detailBorder(border, $bvModal)">{{
+                    border
+                  }}</b-link>
+                </li>
+              </ul>
+              <b>Maps:</b><br />
+              <b-link :href="country.maps.googleMaps" target="_blank"
+                >Google maps</b-link
+              >
+              <br />
+              <b-link :href="country.maps.openStreetMaps" target="_blank"
+                >Open street maps</b-link
+              >
+              <br />
+              <b-modal id="bv-modal-border" hide-footer>
+                <template #modal-title>
+                  <b-link @click="detailCountry(border.name, $bvModal)">{{
+                    border.name
+                  }}</b-link>
+                </template>
+                <div class="d-block text-justify">
+                  <b-card-img
+                    :src="border.svg"
+                    alt="Image"
+                    class="rounded-0"
+                    style="height: 20rem; max-width: 30rem"
+                  ></b-card-img>
+                  <br />
+                  <b>Name official:</b> {{ border.official }}<br />
+                  <b>Capital:</b> {{ border.capital }}<br />
+                  <b>Region:</b> {{ border.region }}<br />
+                  <b>Sub region:</b> {{ border.subregion }}<br />
+                </div>
+                <b-button
+                  class="mt-3"
+                  block
+                  @click="$bvModal.hide('bv-modal-border')"
+                  >Close</b-button
+                >
+              </b-modal>
             </b-card-text>
           </b-card-body>
         </b-col>
@@ -35,18 +83,20 @@ export default {
     return {
       // Note 'isActive' is left out and will not appear in the rendered table
       country: null,
+      border: {
+        name: "",
+        official: "",
+        capital: "",
+        region: "",
+        subregion: "",
+        svg: "",
+      },
     };
   },
   mounted() {
     this.getCountryData();
   },
   methods: {
-    // showCreateModal() {
-    //   this.$refs["create-customer-modal"].show();
-    // },
-    // closeCreateModal() {
-    //   this.$refs["create-customer-modal"].hide();
-    // },
     getCountryData() {
       axios
         .get("https://restcountries.com/v3.1/name/" + this.$route.params.name)
@@ -59,23 +109,30 @@ export default {
     },
     back() {
       this.$router.replace({ name: "home" });
-      // next("/detail");
     },
-  },
-  computed: {
-    items() {
-      if (this.selected != null) {
-        return this.countries.filter((item) => {
-          return item.region
-            .toLowerCase()
-            .includes(this.selected.toLowerCase());
+    detailBorder(code, $bvModal) {
+      axios
+        .get("https://restcountries.com/v3.1/alpha?codes=" + code)
+        .then((response) => {
+          this.border.name = response.data[0].name.common;
+          this.border.official = response.data[0].name.official;
+          this.border.capital = response.data[0].capital[0];
+          this.border.region = response.data[0].region;
+          this.border.subregion = response.data[0].subregion;
+          this.border.svg = response.data[0].flags.svg;
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .finally(() => {
+          $bvModal.show("bv-modal-border");
         });
-      }
-      return this.countries.filter((item) => {
-        return item.name.common
-          .toLowerCase()
-          .includes(this.search.toLowerCase());
-      });
+    },
+    detailCountry(name, $bvModal) {
+      this.$route.params.name = name;
+      this.$router.replace({ name: "detail" });
+      this.getCountryData();
+      $bvModal.hide("bv-modal-border");
     },
   },
 };

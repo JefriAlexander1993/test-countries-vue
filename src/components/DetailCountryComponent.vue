@@ -1,20 +1,22 @@
 <template>
   <div>
     <!-- <b-container class="bv-example-row"> -->
+    <b-button variant="primary" @click="back()" class="mb-2">Back</b-button>
     <b-card no-body class="overflow-hidden">
       <b-row>
-        <b-col md="6">
+        <b-col md="12" sm="12" lg="6" xl="6">
           <b-card-img
             :src="country.flags.svg"
             alt="Image"
             class="rounded-0"
-            style="height: 20rem; width: 30rem; padding: 70px 40px 50px 80px"
           ></b-card-img>
         </b-col>
-        <b-col md="6">
-          <b-card-body :title="country.name.common">
+        <b-col md="12" sm="12" lg="6" xl="6">
+          <b-card-body
+            :title="country.name.common"
+            class="justify-content-center"
+          >
             <b-card-text>
-              <b-button variant="primary" @click="back()">Back</b-button>
               <br />
               <b>Name official:</b> {{ country.name.official }}<br />
               <b>Capital:</b> {{ country.capital[0] }}<br />

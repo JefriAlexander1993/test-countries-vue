@@ -2,11 +2,8 @@
   <div>
     <b-row class="mt-3">
       <b-card>
-        <!-- <b-button
-          >Open Modal</b-button
-        > -->
         <b-row>
-          <b-col cols="8">
+          <b-col cols="12" sm="6" md="8" lg="8" xl="8">
             <b-form-input
               id="input-1"
               v-model="search"
@@ -16,21 +13,39 @@
               class="mb-2"
             ></b-form-input>
           </b-col>
-          <b-col cols="4">
-            <b-form-select
-              v-model="selected"
-              :options="regions"
-            ></b-form-select>
+          <b-col cols="12" sm="6" md="4" lg="4" xl="4">
+            <div>
+              <b-form-select
+                v-model="selected"
+                :options="regions"
+              ></b-form-select>
+            </div>
           </b-col>
-          <b-col cols="3" v-for="(item, index) in items" v-bind:key="index">
+          <div
+            class="d-flex justify-content-center mb-3"
+            v-if="items.length == 0"
+          >
+            <b-spinner
+              variant="primary"
+              style="width: 3rem; height: 3rem"
+            ></b-spinner>
+          </div>
+          <b-col
+            cols="12"
+            sm="6"
+            md="4"
+            lg="3"
+            xl="3"
+            v-for="(item, index) in items"
+            v-bind:key="index"
+          >
             <b-card
               :id="item.idd.suffixes"
               tag="article"
-              style="height: 18rem; width: 14rem; font-size: 13px"
               @click="detailCountry(item.name.common)"
             >
               <b-card-img
-                :src="item.flags.svg"
+                :src="item.flags ? item.flags.svg : ''"
                 alt="Image"
                 class="rounded-0"
                 style="height: 9rem; font-size: 10px"
@@ -41,7 +56,7 @@
                 <b>{{ item.name.common }}</b> <br />
                 <b>Population:</b> {{ item.population }} <br /><b>Region:</b>
                 {{ item.region }} <br />
-                <b>Capital:</b> item.capital
+                <b>Capital:</b>
               </b-card-text>
             </b-card>
 
@@ -60,7 +75,6 @@ export default {
   name: "CardCountryComponent",
   data() {
     return {
-      // Note 'isActive' is left out and will not appear in the rendered table
       search: "",
       countries: [],
       selected: null,
@@ -79,12 +93,6 @@ export default {
     this.getCountriesData();
   },
   methods: {
-    // showCreateModal() {
-    //   this.$refs["create-customer-modal"].show();
-    // },
-    // closeCreateModal() {
-    //   this.$refs["create-customer-modal"].hide();
-    // },
     getCountriesData() {
       axios
         .get("https://restcountries.com/v3.1/all")
@@ -134,5 +142,8 @@ export default {
 <style>
 .action-item:hover {
   cursor: pointer;
+}
+ul.navega li {
+  display: inline;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-row class="mt-3">
+    <b-row class="mt-3" v-if="items.length > 0">
       <b-card>
         <b-row>
           <b-col cols="12" sm="6" md="8" lg="8" xl="8">
@@ -21,15 +21,17 @@
               ></b-form-select>
             </div>
           </b-col>
-          <div
-            class="d-flex justify-content-center mb-3"
-            v-if="items.length == 0"
-          >
-            <b-spinner
-              variant="primary"
-              style="width: 3rem; height: 3rem"
-            ></b-spinner>
-          </div>
+          <!-- <b-col cols="12" class="d-flex justify-content-center mb-3">
+            <div
+              class="d-flex justify-content-center mb-3"
+              v-if="items.length == 0"
+            >
+              <b-spinner
+                variant="primary"
+                style="width: 3rem; height: 3rem"
+              ></b-spinner>
+            </div>
+          </b-col> -->
           <b-col
             cols="12"
             sm="6"
@@ -65,6 +67,9 @@
         </b-row>
       </b-card>
     </b-row>
+    <div class="text-center" v-else>
+      <b-spinner variant="primary"></b-spinner>
+    </div>
   </div>
 </template>
 

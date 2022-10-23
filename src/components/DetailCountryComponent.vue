@@ -8,7 +8,7 @@
             :src="country.flags.svg"
             alt="Image"
             class="rounded-0"
-            style="height: 20rem; max-width: 30rem"
+            style="height: 20rem; width: 30rem; padding: 70px 40px 50px 80px"
           ></b-card-img>
         </b-col>
         <b-col md="6">
@@ -21,14 +21,15 @@
               <b>Region:</b> {{ country.region }}<br />
               <b>Sub region:</b> {{ country.subregion }}<br />
               <b>Borders:</b><br />
-              <ul>
+              <ul class="navega">
                 <li
                   v-for="(border, index) in country.borders"
                   v-bind:key="index"
                 >
                   <b-link @click="detailBorder(border, $bvModal)">{{
                     border
-                  }}</b-link>
+                  }}</b-link
+                  >,
                 </li>
               </ul>
               <b>Maps:</b><br />
@@ -137,3 +138,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+ul.navega li {
+  display: inline;
+}
+</style>
